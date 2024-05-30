@@ -30,33 +30,23 @@ const validPassword = password => {
 app.post('/register', async (request, response) => {
   const {username, name, password, gender, location} = request.body
   const hashedPassword = await bcrypt.hash(password, 10)
-  const selectUserQuery = `
-    SELECT
-    * 
-    FROM
-    user
-    WHERE
-    username = '${username}';`
-
+  const selectUserQuery = `SELECT * FROM user WHERE username = '${username}';`;
   const databaseUser = await database.get(selectUserQuery)
-  if (databaseUser === undefined) {
-    const createUserQuery = `
-        INSERT INTO
-        user(username, name, password, gender, location)
-        VALUES
-        ('${username}', '${name}', '${password}', '${gender}', '${location}')
-        WHERE
-        username = '${username}';`
-
-    if (password.length < 5){
+  if (databaseUser === undefined){
+    if (validPassword(password)){
+     const createUserQuery = `
+     INSERT INTO
+     user(username, name, password, gender, location)
+     VALUES
+     ('${username}', '${name}', '${password}', '${gender}', '${location}');`;
+    await database.run(createUserQuery);
+    response.status(200);
+    response.send('User created successfully')
+    }else{
       response.status(400)
       response.send('Password is too short')
-    } else {
-      let newUserDetails = await database.run(createUserQuery)
-      response.status(200)
-      response.send('User created successfully')
     }
-  } else {
+  }else{
     response.status(400)
     response.send('User already exists')
   }
@@ -69,22 +59,22 @@ app.post('/login', async (request, response)=>{
   *
   FROM
   user
-  WHERE 
-  username = ${username};`
-
+  WHERE
+  username = '${username}';`;
   const databaseUser = await database.get(selectUserQuery)
   if (databaseUser === undefined){
     response.status(400)
     response.send('Invalid user')
+  }else{
+    const isPasswordMatched = await bcrypt.compare(password, databaseUser.password);
+    if (isPasswordMatched === true){
+      response.status(200)
+      response.send('Login password')
     }else{
-      const isPasswordMatched = await bcrypt.compare(password, databaseUser.password,)
-      if (isPasswordMatched === true){
-        response.send('Login success!')
-      }else{
-        response.status(400)
-        response.send('Invalid Password')
-      }
+      response.status(400)
+      response.send('Invalid password')
     }
+  }
 })
 
 app.put('/change-password', async (request, response)=>{
@@ -95,36 +85,35 @@ app.put('/change-password', async (request, response)=>{
   FROM
   user
   WHERE
-  username = ${username};`
+  username = '${username}';`;
 
-  const databasUser = await database.get(selectUserQuery)
-  if (databasUser === undefined){
+  const databaseUser = await database.get(selectUserQuery);
+  if (databaseUser === undefined){
     response.status(400)
-    response.send('Invalid current password')
-}else{
-  const isPasswordMatched = await bcrypt.compare(oldPassword, databasUser.password)
-  if (isPasswordMatched === true){
-    if (validPassword(newPassword)){
-      const hashedPassword = await bcrypt.hash(password, 10)
-
-      const updatePasswordQuery = `
+    response.send('Invalid user')
+  }else{
+    const isPasswordMatched = await bcrypt.compare(password, oldPassword.password);
+    if (isPasswordMatched === true){
+     if (validPassword(password)){
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const updateUserQuery = `
       UPDATE
       user
       SET
-      username = ${username};`
-
-      const user = await databasUser.run(updatePasswordQuery)
-      response.send("Password Updated")
-      }else{
-        response.status(400)
-        response.send('Password is too short')
-  
-      }
-  }else{
-    response.status(400)
-    response.send("Invalid current password")
+      password = '${hashedPassword}'
+      WHERE
+      username = '${username}';`;
+      
+      await database.run(updateUserQuery)
+      response.send('Password updated')
+     }else{
+      response.status(400)
+      response.send('Password is too short')
+     }
+    }else{
+      response.status(400)
+      response.send('Invalid current password')
+    }
   }
-
-}
 })
-module.exports = app
+module.exports = app;
