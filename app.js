@@ -93,7 +93,7 @@ app.put('/change-password', async (request, response) => {
 
   const databaseUser = await database.get(selectUserQuery)
 
-  if (databaseUser == undefined) {
+  if (databaseUser === undefined) {
     response.status(400)
     response.send('Invalid user')
   } else {
@@ -115,11 +115,11 @@ app.put('/change-password', async (request, response) => {
 
         await database.run(updateUserQuery)
         response.send('Password updated')
-      }else{
+      } else {
         response.status(400)
         response.send('Password is too short')
       }
-    }else{
+    } else {
       response.status(400)
       response.send('Invalid current password')
     }
