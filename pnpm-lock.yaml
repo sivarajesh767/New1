@@ -50,7 +50,7 @@ packages:
       integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==
   /agent-base/6.0.2:
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.5
     dev: false
     engines:
       node: '>= 6.0.0'
@@ -438,7 +438,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==
-  /debug/4.3.4:
+  /debug/4.3.5:
     dependencies:
       ms: 2.1.2
     dev: false
@@ -450,7 +450,7 @@ packages:
       supports-color:
         optional: true
     resolution:
-      integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
+      integrity: sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==
   /decompress-response/3.3.0:
     dependencies:
       mimic-response: 1.0.1
@@ -895,7 +895,7 @@ packages:
   /https-proxy-agent/5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4
+      debug: 4.3.5
     dev: false
     engines:
       node: '>= 6'
